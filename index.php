@@ -10,6 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 $isLoggedIn = true;
 $userId = $_SESSION['user_id'];
 $currentUser = $_SESSION['name'] ?? $_SESSION['user_name'] ?? $_SESSION['username'] ?? 'Alumni Member';
+$defaultAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($currentUser) . '&background=1c4973&color=fff&size=200';
 
 // 1. Fetch logged-in user's current profile data
 $userData = [
@@ -17,7 +18,7 @@ $userData = [
     'college' => 'Sathyabama Institute of Science and Technology',
     'job_title' => 'Alumni Member',
     'bio' => '',
-    'profile_pic' => 'images/john.jpg'
+    'profile_pic' => $defaultAvatar
 ];
 
 if ($isLoggedIn) {
@@ -30,7 +31,9 @@ if ($isLoggedIn) {
         $userData['college'] = $row['college'] ?: 'Sathyabama Institute of Science and Technology';
         $userData['job_title'] = $row['job_title'] ?: 'Alumni Member';
         $userData['bio'] = $row['bio'] ?? '';
-        $userData['profile_pic'] = !empty($row['profile_pic']) ? $row['profile_pic'] : 'images/john.jpg';
+        $userData['profile_pic'] = (!empty($row['profile_pic']) && $row['profile_pic'] !== 'images/john.jpg')
+            ? $row['profile_pic']
+            : 'https://ui-avatars.com/api/?name=' . urlencode($row['name']) . '&background=1c4973&color=fff&size=200';
     }
     $stmt->close();
 }
@@ -504,7 +507,9 @@ if ($dirResult) {
             <div id="alumniList">
                 <!-- Newly Registered Members from Database -->
                 <?php foreach ($dbAlumni as $member): 
-                    $memberPic = !empty($member['profile_pic']) ? $member['profile_pic'] : 'images/john.jpg';
+                    $memberPic = (!empty($member['profile_pic']) && $member['profile_pic'] !== 'images/john.jpg')
+                        ? $member['profile_pic']
+                        : 'https://ui-avatars.com/api/?name=' . urlencode($member['name']) . '&background=1c4973&color=fff&size=200';
                     $safeBio = str_replace(["\r", "\n"], ' ', addslashes(htmlspecialchars($member['bio'] ?? '')));
                 ?>
                     <div class="alumni-card" onclick="openModal(
@@ -525,65 +530,65 @@ if ($dirResult) {
                     </div>
                 <?php endforeach; ?>
 
-                <!-- Featured Alumni Profiles -->
-                <div class="alumni-card" onclick="openModal('Raj', 'Software Engineer', 'B.E. Computer Science & Engineering', 'Class of 2021', 'raj@example.com', 'images/sanju.jpg', 'Specializing in scalable backend systems and cloud infrastructure.')">
-                    <img src="images/sanju.jpg" alt="Raj">
+                <!-- Featured Alumni Profiles (Professional Portraits) -->
+                <div class="alumni-card" onclick="openModal('Raj', 'Software Engineer', 'B.E. Computer Science & Engineering', 'Class of 2021', 'raj@example.com', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face', 'Specializing in scalable backend systems and cloud infrastructure.')">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face" onerror="this.src='https://ui-avatars.com/api/?name=Raj&background=102a43&color=fff&size=200'" alt="Raj">
                     <div class="alumni-info"><h3>Raj</h3><p>Software Engineer</p></div>
                 </div>
-                <div class="alumni-card" onclick="openModal('Gautham', 'Data Scientist', 'B.E. Data Science', 'Class of 2022', 'gautham@example.com', 'images/cook.jpg', 'Focused on predictive analytics, machine learning pipelines, and NLP.')">
-                    <img src="images/cook.jpg" alt="Gautham">
+                <div class="alumni-card" onclick="openModal('Gautham', 'Data Scientist', 'B.E. Data Science', 'Class of 2022', 'gautham@example.com', 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop&crop=face', 'Focused on predictive analytics, machine learning pipelines, and NLP.')">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop&crop=face" onerror="this.src='https://ui-avatars.com/api/?name=Gautham&background=0369a1&color=fff&size=200'" alt="Gautham">
                     <div class="alumni-info"><h3>Gautham</h3><p>Data Scientist</p></div>
                 </div>
-                <div class="alumni-card" onclick="openModal('Joe', 'Marketing Specialist', 'MBA Marketing & Strategy', 'Class of 2019', 'joe@example.com', 'images/boy4.jpg', 'Leading B2B brand growth and digital acquisition campaigns.')">
-                    <img src="images/boy4.jpg" alt="Joe">
+                <div class="alumni-card" onclick="openModal('Joe', 'Marketing Specialist', 'MBA Marketing & Strategy', 'Class of 2019', 'joe@example.com', 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=300&h=300&fit=crop&crop=face', 'Leading B2B brand growth and digital acquisition campaigns.')">
+                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=300&h=300&fit=crop&crop=face" onerror="this.src='https://ui-avatars.com/api/?name=Joe&background=1e3a8a&color=fff&size=200'" alt="Joe">
                     <div class="alumni-info"><h3>Joe</h3><p>Marketing Specialist</p></div>
                 </div>
-                <div class="alumni-card" onclick="openModal('Davis', 'Professor of Computer Science', 'Ph.D. Computer Science', 'Class of 2015', 'davis@example.com', 'images/hardik.jpg', 'Academic researcher and mentor in distributed computing and AI ethics.')">
-                    <img src="images/hardik.jpg" alt="Davis">
+                <div class="alumni-card" onclick="openModal('Davis', 'Professor of Computer Science', 'Ph.D. Computer Science', 'Class of 2015', 'davis@example.com', 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face', 'Academic researcher and mentor in distributed computing and AI ethics.')">
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face" onerror="this.src='https://ui-avatars.com/api/?name=Davis&background=0f766e&color=fff&size=200'" alt="Davis">
                     <div class="alumni-info"><h3>Davis</h3><p>Professor</p></div>
                 </div>
-                <div class="alumni-card" onclick="openModal('Beni', 'Senior UX/UI Designer', 'B.Des. Visual Communication', 'Class of 2021', 'beni@example.com', 'images/rabada.jpg', 'Designing accessible, human-centered enterprise and mobile products.')">
-                    <img src="images/rabada.jpg" alt="Beni">
+                <div class="alumni-card" onclick="openModal('Beni', 'Senior UX/UI Designer', 'B.Des. Visual Communication', 'Class of 2021', 'beni@example.com', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=300&fit=crop&crop=face', 'Designing accessible, human-centered enterprise and mobile products.')">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=300&fit=crop&crop=face" onerror="this.src='https://ui-avatars.com/api/?name=Beni&background=4338ca&color=fff&size=200'" alt="Beni">
                     <div class="alumni-info"><h3>Beni</h3><p>UX/UI Designer</p></div>
                 </div>
-                <div class="alumni-card" onclick="openModal('Alex', 'Full Stack Developer', 'B.E. Computer Science & Engineering', 'Class of 2020', 'alex@example.com', 'images/smith.jpg', 'Building end-to-end web platforms with React, Node.js, and relational databases.')">
-                    <img src="images/smith.jpg" alt="Alex">
+                <div class="alumni-card" onclick="openModal('Alex', 'Full Stack Developer', 'B.E. Computer Science & Engineering', 'Class of 2020', 'alex@example.com', 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&h=300&fit=crop&crop=face', 'Building end-to-end web platforms with React, Node.js, and relational databases.')">
+                    <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&h=300&fit=crop&crop=face" onerror="this.src='https://ui-avatars.com/api/?name=Alex&background=1d4ed8&color=fff&size=200'" alt="Alex">
                     <div class="alumni-info"><h3>Alex</h3><p>Full Stack Developer</p></div>
                 </div>
-                <div class="alumni-card" onclick="openModal('Sam', 'Business & Data Analyst', 'B.Sc. Applied Statistics', 'Class of 2022', 'sam@example.com', 'images/boy2.jpg', 'Turning operational metrics into executive decision-making dashboards.')">
-                    <img src="images/boy2.jpg" alt="Sam">
+                <div class="alumni-card" onclick="openModal('Sam', 'Business & Data Analyst', 'B.Sc. Applied Statistics', 'Class of 2022', 'sam@example.com', 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=300&h=300&fit=crop&crop=face', 'Turning operational metrics into executive decision-making dashboards.')">
+                    <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=300&h=300&fit=crop&crop=face" onerror="this.src='https://ui-avatars.com/api/?name=Sam&background=047857&color=fff&size=200'" alt="Sam">
                     <div class="alumni-info"><h3>Sam</h3><p>Data Analyst</p></div>
                 </div>
-                <div class="alumni-card" onclick="openModal('Jeni', 'Lead Database Administrator', 'B.E. Information Technology', 'Class of 2018', 'jeni@example.com', 'images/girl1.jpg', 'Managing high-availability MySQL and PostgreSQL clusters.')">
-                    <img src="images/girl1.jpg" alt="Jeni">
+                <div class="alumni-card" onclick="openModal('Jeni', 'Lead Database Administrator', 'B.E. Information Technology', 'Class of 2018', 'jeni@example.com', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop&crop=face', 'Managing high-availability MySQL and PostgreSQL clusters.')">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop&crop=face" onerror="this.src='https://ui-avatars.com/api/?name=Jeni&background=6d28d9&color=fff&size=200'" alt="Jeni">
                     <div class="alumni-info"><h3>Jeni</h3><p>Database Administrator</p></div>
                 </div>
-                <div class="alumni-card" onclick="openModal('James', 'Frontend Web Developer', 'Bachelor of Computer Applications', 'Class of 2023', 'james@example.com', 'images/boy1.jpg', 'Passionate about modern web standards, performance optimization, and UI engineering.')">
-                    <img src="images/boy1.jpg" alt="James">
+                <div class="alumni-card" onclick="openModal('James', 'Frontend Web Developer', 'Bachelor of Computer Applications', 'Class of 2023', 'james@example.com', 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=300&h=300&fit=crop&crop=face', 'Passionate about modern web standards, performance optimization, and UI engineering.')">
+                    <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=300&h=300&fit=crop&crop=face" onerror="this.src='https://ui-avatars.com/api/?name=James&background=1e40af&color=fff&size=200'" alt="James">
                     <div class="alumni-info"><h3>James</h3><p>Web Developer</p></div>
                 </div>
-                <div class="alumni-card" onclick="openModal('Madhu', 'Game Systems Developer', 'B.E. Computer Science & Engineering', 'Class of 2021', 'madhu@example.com', 'images/girl3.jpg', 'Developing interactive 3D gameplay mechanics and real-time physics engines.')">
-                    <img src="images/girl3.jpg" alt="Madhu">
+                <div class="alumni-card" onclick="openModal('Madhu', 'Game Systems Developer', 'B.E. Computer Science & Engineering', 'Class of 2021', 'madhu@example.com', 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&h=300&fit=crop&crop=face', 'Developing interactive 3D gameplay mechanics and real-time physics engines.')">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&h=300&fit=crop&crop=face" onerror="this.src='https://ui-avatars.com/api/?name=Madhu&background=be185d&color=fff&size=200'" alt="Madhu">
                     <div class="alumni-info"><h3>Madhu</h3><p>Game Developer</p></div>
                 </div>
-                <div class="alumni-card" onclick="openModal('Durai', 'Data Scientist at Amazon', 'B.E. Data Science', 'Class of 2020', 'durai21@example.com', 'images/booy3.jpg', 'Working on large-scale recommendation systems and customer demand forecasting.')">
-                    <img src="images/booy3.jpg" alt="Durai">
+                <div class="alumni-card" onclick="openModal('Durai', 'Data Scientist at Amazon', 'B.E. Data Science', 'Class of 2020', 'durai21@example.com', 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&h=300&fit=crop&crop=face', 'Working on large-scale recommendation systems and customer demand forecasting.')">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&h=300&fit=crop&crop=face" onerror="this.src='https://ui-avatars.com/api/?name=Durai&background=0f172a&color=fff&size=200'" alt="Durai">
                     <div class="alumni-info"><h3>Durai</h3><p>Data Scientist at Amazon</p></div>
                 </div>
-                <div class="alumni-card" onclick="openModal('Daniel', 'Software Developer at TCS', 'B.E. Computer Science & Engineering', 'Class of 2016', 'daniel22@example.com', 'images/stokes.jpg', 'Delivering enterprise cloud migration and core banking software solutions.')">
-                    <img src="images/stokes.jpg" alt="Daniel">
+                <div class="alumni-card" onclick="openModal('Daniel', 'Software Developer at TCS', 'B.E. Computer Science & Engineering', 'Class of 2016', 'daniel22@example.com', 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=300&h=300&fit=crop&crop=face', 'Delivering enterprise cloud migration and core banking software solutions.')">
+                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=300&h=300&fit=crop&crop=face" onerror="this.src='https://ui-avatars.com/api/?name=Daniel&background=1c4973&color=fff&size=200'" alt="Daniel">
                     <div class="alumni-info"><h3>Daniel</h3><p>Software Developer at TCS</p></div>
                 </div>
-                <div class="alumni-card" onclick="openModal('Riya', 'Senior Brand & Graphic Designer', 'Bachelor of Graphic Design', 'Class of 2011', 'riya02@example.com', 'images/girl2.jpg', 'Crafting visual identities and brand systems for global startups.')">
-                    <img src="images/girl2.jpg" alt="Riya">
+                <div class="alumni-card" onclick="openModal('Riya', 'Senior Brand & Graphic Designer', 'Bachelor of Graphic Design', 'Class of 2011', 'riya02@example.com', 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=300&h=300&fit=crop&crop=face', 'Crafting visual identities and brand systems for global startups.')">
+                    <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=300&h=300&fit=crop&crop=face" onerror="this.src='https://ui-avatars.com/api/?name=Riya&background=7c3aed&color=fff&size=200'" alt="Riya">
                     <div class="alumni-info"><h3>Riya</h3><p>Graphic Designer</p></div>
                 </div>
-                <div class="alumni-card" onclick="openModal('Merin', 'Dental Surgeon at Apollo Speciality Hospital', 'Bachelor of Dental Surgery', 'Class of 2010', 'merin10@example.com', 'images/girl4.jpg', 'Dedicated to restorative dentistry and community healthcare outreach.')">
-                    <img src="images/girl4.jpg" alt="Merin">
+                <div class="alumni-card" onclick="openModal('Merin', 'Dental Surgeon at Apollo Speciality Hospital', 'Bachelor of Dental Surgery', 'Class of 2010', 'merin10@example.com', 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&h=300&fit=crop&crop=face', 'Dedicated to restorative dentistry and community healthcare outreach.')">
+                    <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&h=300&fit=crop&crop=face" onerror="this.src='https://ui-avatars.com/api/?name=Merin&background=0d9488&color=fff&size=200'" alt="Merin">
                     <div class="alumni-info"><h3>Merin</h3><p>Dental Surgeon</p></div>
                 </div>
-                <div class="alumni-card" onclick="openModal('Matthew', 'Senior Electrical Engineer at Larsen & Toubro', 'B.E. Electrical & Electronics', 'Class of 2014', 'matthew31@example.com', 'images/boy5.jpg', 'Overseeing industrial power distribution and infrastructure projects.')">
-                    <img src="images/boy5.jpg" alt="Matthew">
+                <div class="alumni-card" onclick="openModal('Matthew', 'Senior Electrical Engineer at Larsen & Toubro', 'B.E. Electrical & Electronics', 'Class of 2014', 'matthew31@example.com', 'https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=300&h=300&fit=crop&crop=face', 'Overseeing industrial power distribution and infrastructure projects.')">
+                    <img src="https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=300&h=300&fit=crop&crop=face" onerror="this.src='https://ui-avatars.com/api/?name=Matthew&background=334155&color=fff&size=200'" alt="Matthew">
                     <div class="alumni-info"><h3>Matthew</h3><p>Electrical Engineer at L&amp;T</p></div>
                 </div>
             </div>
